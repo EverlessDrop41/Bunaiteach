@@ -12,6 +12,8 @@
       fx:controller="Console.Controllers.ConsoleController"
       fx:id="container">
     <children>
-        <Text fx:id="console">Ha</Text>
+        <Text fx:id="ConsoleOutput">Ha</Text>
+        <TextArea fx:id="ConsoleInput" promptText="Enter Command"/>
+        <Button fx:id="SubmitCodeBtn" text="Submit Code" onAction="#submitCode"/>
     </children>
 </VBox>

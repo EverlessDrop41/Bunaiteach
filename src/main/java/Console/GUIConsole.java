@@ -12,7 +12,7 @@ import javafx.stage.Stage;
 /**
  * Created by emilyperegrine on 27/08/2016.
  */
-public class GUIConsole extends Application implements IConsole {
+public class GUIConsole extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -23,21 +23,6 @@ public class GUIConsole extends Application implements IConsole {
         primaryStage.setTitle("Hello World!");
         primaryStage.setScene(scene);
         primaryStage.show();
-    }
-    public static void main(String[] args) {
-        launch(args);
-    }
-
-    public void Print(String input) {
-
-    }
-
-    public void PrintLn(String input) {
-
-    }
-
-    public String Input() {
-        return null;
     }
 
     public static void Main(String[] args) {
