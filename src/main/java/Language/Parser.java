@@ -127,6 +127,9 @@ public class Parser {
             }
             currentLine++;
         }
-        System.out.println(mVariables.get("a"));
+        Variable variable = (Variable) mVariables.get("a");
+        System.out.println(variable.getStringValue());
+        variable = (Variable) mVariables.get("b");
+        System.out.println(variable.getStringValue());
     }
 }
