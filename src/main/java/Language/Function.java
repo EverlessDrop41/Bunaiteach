@@ -15,13 +15,9 @@ public class Function {
         // Split first line to get name and params
         String[] firstLine = code[0].split("\\s+");
         String[] declaration = firstLine[1].split(":");
-        String mName = declaration[0];
-        String mReturnType = declaration[1];
+        mName = declaration[0];
+        mReturnType = declaration[1];
 
-        System.out.println("DECLARTION");
-        System.out.println(mName);
-        System.out.println(mReturnType);
-        System.out.flush();
         // Check function takes parms
         if (firstLine.length > 2) {
             // Iterate through params and add to HashMap mParams
@@ -46,7 +42,6 @@ public class Function {
     }
 
     public String getName() {
-        System.out.print("GEtting name");
         return mName;
     }
 }
