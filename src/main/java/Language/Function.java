@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Arrays;
 
 public class Function {
-    private String mCode;
+    private String[] mCode;
     private String mName;
-    private VariableType mReturnType;
+    private String mReturnType;
     private HashMap<String, VariableType> mParams;
 
     public Function(String[] code) {
@@ -18,6 +18,11 @@ public class Function {
         String mName = declaration[0];
         String mReturnType = declaration[1];
 
+        System.out.println("DECLARTION");
+        System.out.flush();
+        System.out.println("DECLARTION: %s".format(declaration.toString()));
+        System.out.println(mReturnType);
+        System.out.flush();
         // Check function takes parms
         if (firstLine.length > 2) {
             // Iterate through params and add to HashMap mParams
@@ -33,15 +38,16 @@ public class Function {
         }
 
         // Add code to mCode excluding first and last lines
-        mCode = String.join("", Arrays.copyOfRange(code, 1, code.length - 1));
+        mCode = Arrays.copyOfRange(code, 1, code.length - 1);
     }
 
-    public void Run() throws Exception {
-        Parser parser = new Parser(mCode);
-        parser.RunApp();
+    public Object call() throws Exception {
+        Parser parser = new Parser();
+        return parser.Run(mCode, mReturnType);
     }
 
     public String getName() {
+        System.out.print("GEtting name");
         return mName;
     }
 }
