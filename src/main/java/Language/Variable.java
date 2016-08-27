@@ -3,36 +3,27 @@ package Language;
 /**
  * Created by emilyperegrine on 27/08/2016.
  */
-public class Variable {
-    private VariableType mType;
+public class Variable<T> {
     private String mName;
-    private Object mValue;
+    private T mValue;
     private String mStringValue;
 
-    public Variable(VariableType type, String value) {
-        mType = type;
+    public Variable(String name, T value) {
+        mName = name;
         mValue = value;
-        mStringValue = value;
-    }
-
-    public String getStringValue() {
-        return mStringValue;
+        mStringValue = value.toString();
     }
 
     public String getName() {
         return mName;
     }
 
-    public String GetValue() {
-        return mValue.toString();
+    public String getStringValue() {
+        return mStringValue;
     }
 
-    public <T> T GetNativeValue(Class<T> clazz) {
-        try {
-            return clazz.cast(mValue);
-        } catch(ClassCastException e) {
-            return null;
-        }
+    public T getValue() {
+        return mValue;
     }
 
 }
