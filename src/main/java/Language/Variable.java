@@ -12,4 +12,17 @@ public class Variable {
         mType = type;
         mValue = value;
     }
+
+    public String GetValue() {
+        return mValue.toString();
+    }
+
+    public <T> T GetNatvieValue(Class<T> clazz) {
+        try {
+            return clazz.cast(mValue);
+        } catch(ClassCastException e) {
+            return null;
+        }
+    }
+
 }
