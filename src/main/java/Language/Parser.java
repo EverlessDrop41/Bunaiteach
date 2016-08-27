@@ -76,7 +76,11 @@ public class Parser {
                     String expression = String.join("", Arrays.copyOfRange(seperated, 3, seperated.length));
 
                     // Sub in variables and functions
+                    for (Variable variable: mVariables.values()) {
+                        expression = expression.replace(variable.getName(), variable.getStringValue());
+                    }
 
+                    
                     // Get evaluations
                     Object evaluation = mEngine.eval(expression);
 
