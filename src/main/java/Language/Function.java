@@ -19,8 +19,7 @@ public class Function {
         String mReturnType = declaration[1];
 
         System.out.println("DECLARTION");
-        System.out.flush();
-        System.out.println("DECLARTION: %s".format(declaration.toString()));
+        System.out.println(mName);
         System.out.println(mReturnType);
         System.out.flush();
         // Check function takes parms
