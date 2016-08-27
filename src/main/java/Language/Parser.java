@@ -80,11 +80,26 @@ public class Parser {
                         expression = expression.replace(variable.getName(), variable.getStringValue());
                     }
 
-                    
+
                     // Get evaluations
                     Object evaluation = mEngine.eval(expression);
 
 
+                } else if (seperated[0].equals("FUNC")) {
+                    // Get current line number                    
+                    int c = currentLine + 1;
+                    // Loop until get end line number
+                    while (c < programLines.length) {
+                        if (programLines[c].equals("END")) {
+                            // Create Function object
+                            Function function = new Function(Arrays.copyOfRange(programLines, currentLine, c))
+                            functions.put(function.getName(), function);
+                            // Set while loop til after function declartion
+                            i = c + 1;
+                            break;
+                        }
+                    }
+                    
                 }
             } else {
                 throw new Exception("Do not know what to do");
