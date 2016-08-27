@@ -47,7 +47,7 @@ public class ConsoleController {
     }
 
     public void submitCode(ActionEvent actionEvent) {
-        c.PrintLn(c.Input());
+        c.PrintLn(ConsoleInput.getText());
     }
 
     public void GuiPrint(String message) {

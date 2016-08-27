@@ -1,0 +1,27 @@
+* {
+    -fx-text-fill: #008000 !important;
+}
+
+#container {
+    -fx-background-color: #6d6d6d;
+    -fx-padding: 1em;
+}
+
+#ConsoleOutput {
+    -fx-text-fill: #008000 !important;
+}
+
+#ConsoleInput {
+    -fx-text-fill: #008000;
+}
+
+#SubmitCodeBtn {
+    -fx-fill-width: true;
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #000000;
+    -fx-border-radius: 0px !important;
+
+    -fx-padding: 10px;
+    -fx-border-insets: 5px;
+    -fx-background-insets: 5px;
+}
