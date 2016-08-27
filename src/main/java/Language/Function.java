@@ -6,5 +6,5 @@ public class Function {
     private String mCode;
     private String mName;
     private VariableType mReturnType;
-    private HashMap
+    // private HashMap
 }

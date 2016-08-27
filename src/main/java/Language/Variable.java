@@ -22,4 +22,17 @@ public class Variable {
     public String getName() {
         return mName;
     }
+
+    public String GetValue() {
+        return mValue.toString();
+    }
+
+    public <T> T GetNativeValue(Class<T> clazz) {
+        try {
+            return clazz.cast(mValue);
+        } catch(ClassCastException e) {
+            return null;
+        }
+    }
+
 }
