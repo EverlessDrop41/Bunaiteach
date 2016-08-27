@@ -37,7 +37,7 @@ public class Parser {
         Read(program);
         mKeywords = Arrays.asList(KEYWORDS);
         mVariables = new VariableCollection();
-        mFunctions = new HashMap<>();
+        mFunctions = new HashMap<String, Function>();
     }
 
     public void Read(String program) {

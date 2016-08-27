@@ -10,7 +10,7 @@ public class Function {
     private HashMap<String, VariableType> mParams;
 
     public Function(String[] code) {
-        mParams = new HashMap<>();
+        mParams = new HashMap<String, VariableType>();
 
         // Split first line to get name and params
         String[] firstLine = code[0].split("\\s+");
@@ -23,7 +23,7 @@ public class Function {
             // Iterate through params and add to HashMap mParams
             int i = 2;
             while (i < firstLine.length) {
-                String param = firstLine[i].split(":");
+                String[] param = firstLine[i].split(":");
                 String name = param[0];
                 String typeAsString = param[1];
                 VariableType type = VariableType.valueOf(typeAsString);
@@ -36,7 +36,7 @@ public class Function {
         mCode = String.join("", Arrays.copyOfRange(code, 1, code.length - 1));
     }
 
-    public void Run() {
+    public void Run() throws Exception {
         Parser parser = new Parser(mCode);
         parser.RunApp();
     }

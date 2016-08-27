@@ -18,7 +18,7 @@ public class VariableCollection {
     private TreeSet<String> mNames;
 
     public VariableCollection() {
-        mNames = new TreeSet<>();
+        mNames = new TreeSet<String>();
         mBools = new HashMap<String, Variable<Boolean>>();
         mInts = new HashMap<String, Variable<Integer>>();
         mFloats = new HashMap<String, Variable<Float>>();
