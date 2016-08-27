@@ -25,7 +25,8 @@ public class Parser {
     };
 
     private List<String> mKeywords;
-    private HashMap<String, Variable> mVariables;
+    private VariableCollection mVariables;
+    private HashMap<String, Function> mFunctions;
 
     private String[] mLines;
 
@@ -35,6 +36,8 @@ public class Parser {
     public Parser(String program) {
         Read(program);
         mKeywords = Arrays.asList(KEYWORDS);
+        mVariables = new VariableCollection();
+        mFunctions = new HashMap<>();
     }
 
     public void Read(String program) {
@@ -65,7 +68,7 @@ public class Parser {
                     // Get name and type of variable
                     String[] variableDec = seperated[1].split("[:]");
                     String name = variableDec[0];
-                    String type = variableDec[1];
+                    String typeAsString = variableDec[1];
 
                     // Validate equals sign is present
                     if (!seperated[2].equals("=")) {
@@ -76,14 +79,32 @@ public class Parser {
                     String expression = String.join("", Arrays.copyOfRange(seperated, 3, seperated.length));
 
                     // Sub in variables and functions
-                    for (Variable variable: mVariables.values()) {
+                    for (String varName: mVariables.getNames()) {
+                        Variable variable = (Variable) mVariables.get(varName);
                         expression = expression.replace(variable.getName(), variable.getStringValue());
                     }
 
-
-                    // Get evaluations
+                     // Get evaluations
                     Object evaluation = mEngine.eval(expression);
 
+                    if (typeAsString.equals("INT")) {
+                         Variable<Integer> variable = new Variable<Integer>(name, (Integer) evaluation);
+                         mVariables.addInt(variable);
+                    } else if (typeAsString.equals("STRING")) {
+                        Variable<String> variable = new Variable<String>(name, (String) evaluation);
+                         mVariables.addString(variable);
+                    } else if (typeAsString.equals("BOOL")) {
+                        Variable<Boolean> variable = new Variable<Boolean>(name, (Boolean) evaluation);
+                         mVariables.addBool(variable);
+                    } else if (typeAsString.equals("FLOAT")) {
+                        Variable<Float> variable = new Variable<Float>(name, (Float) evaluation);
+                         mVariables.addFloat(variable);
+                    } else if (typeAsString.equals("CHAR")) {
+                        Variable<Character> variable = new Variable<Character>(name, (Character) evaluation);
+                         mVariables.addChar(variable);
+                    } else {
+                        throw new Exception("Unknown type");
+                    }
 
                 } else if (seperated[0].equals("FUNC")) {
                     // Get current line number                    
@@ -92,10 +113,10 @@ public class Parser {
                     while (c < programLines.length) {
                         if (programLines[c].equals("END")) {
                             // Create Function object
-                            Function function = new Function(Arrays.copyOfRange(programLines, currentLine, c))
-                            functions.put(function.getName(), function);
+                            Function function = new Function(Arrays.copyOfRange(programLines, currentLine, c));
+                            mFunctions.put(function.getName(), function);
                             // Set while loop til after function declartion
-                            i = c + 1;
+                            currentLine = c + 1;
                             break;
                         }
                     }
@@ -106,5 +127,6 @@ public class Parser {
             }
             currentLine++;
         }
+        System.out.println(mVariables.get("a"));
     }
 }

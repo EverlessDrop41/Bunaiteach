@@ -14,7 +14,7 @@ public class Function {
 
         // Split first line to get name and params
         String[] firstLine = code[0].split("\\s+");
-        String declaration = firstLine[1].split(":");
+        String[] declaration = firstLine[1].split(":");
         String mName = declaration[0];
         String mReturnType = declaration[1];
 
@@ -24,8 +24,8 @@ public class Function {
             int i = 2;
             while (i < firstLine.length) {
                 String param = firstLine[i].split(":");
-                String name = param[0]
-                String typeAsString = param[1]
+                String name = param[0];
+                String typeAsString = param[1];
                 VariableType type = VariableType.valueOf(typeAsString);
                 mParams.put(name, type); 
                 i++;

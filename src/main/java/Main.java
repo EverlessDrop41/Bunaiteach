@@ -6,7 +6,7 @@ import Language.Parser;
 public class Main {
     public static void main(String[] args) throws Exception {
         System.out.println("Hello, World!");
-        Parser parser = new Parser("print hello\nprint bye");
+        Parser parser = new Parser("VAR a:INT = 2");
         parser.RunApp();
     }
 }
