@@ -158,8 +158,35 @@ public class Parser {
                     currentLine = lineToGoTo;
                     
                 } else if (seperated[0].equals("IF")) {
-                    currentLine++;
-                    continue;
+                    // Get condition
+                    String condition = String.join("", Arrays.copyOfRange(seperated, 1, seperated.length));
+                    String conditionSubbed = subInVariablesAndFunctions(condition);
+
+                    // Evaluate condition
+                    Boolean conditionBoolean = (Boolean) mEngine.eval(conditionSubbed);
+
+                    // Get end line
+                    int c = currentLine + 1;
+                    int lineToGoTo = -1;
+
+                    while (c < programLines.length) {
+                        if (programLines[c].equals("ENDIF")) {
+                            lineToGoTo = c + 1;
+                            break ;
+                        }
+                        c++;
+                    }
+
+                    if (lineToGoTo == -1) {
+                        throw new Exception("While loop not terminated.");
+                    }
+
+
+                    // Get lines to execute
+
+                    // Run lines
+
+                    // Update current line
                 } else if (seperated[0].equals("RETURN")) {
                     // Get text of what we are returning
                     // Get expression to evaluate
