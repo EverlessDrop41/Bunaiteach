@@ -1,22 +1,22 @@
 package Console.Controllers;
 
 import Console.IConsole;
+import Language.Parser;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import sun.nio.ch.IOUtil;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.Optional;
 
 /**
@@ -28,6 +28,7 @@ public class ConsoleController {
     @FXML private TextField ConsoleInput;
 
     IConsole c;
+    Parser parser;
 
     @FXML
     protected void initialize() {
@@ -63,6 +64,8 @@ public class ConsoleController {
         }));
 
         ConsoleOutput.setContextMenu(consoleMenu);
+
+        parser = new Parser(c);
     }
 
     private MenuItem createItem(String name, EventHandler<ActionEvent> a) {
@@ -91,6 +94,40 @@ public class ConsoleController {
         return result.isPresent() ? result.get() : "";
     }
 
+    public void showException(Exception ex) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Exception Dialog");
+        alert.setHeaderText("Look, an Exception Dialog");
+        alert.setContentText(ex.getMessage());
+
+// Create expandable Exception.
+        StringWriter sw = new StringWriter();
+        PrintWriter pw = new PrintWriter(sw);
+        ex.printStackTrace(pw);
+        String exceptionText = sw.toString();
+
+        Label label = new Label("The exception stacktrace was:");
+
+        TextArea textArea = new TextArea(exceptionText);
+        textArea.setEditable(false);
+        textArea.setWrapText(true);
+
+        textArea.setMaxWidth(Double.MAX_VALUE);
+        textArea.setMaxHeight(Double.MAX_VALUE);
+        GridPane.setVgrow(textArea, Priority.ALWAYS);
+        GridPane.setHgrow(textArea, Priority.ALWAYS);
+
+        GridPane expContent = new GridPane();
+        expContent.setMaxWidth(Double.MAX_VALUE);
+        expContent.add(label, 0, 0);
+        expContent.add(textArea, 0, 1);
+
+// Set expandable Exception into the dialog pane.
+        alert.getDialogPane().setExpandableContent(expContent);
+
+        alert.showAndWait();
+    }
+
     public void clearCodeInput() {
         CodeInput.setText("");
     }
@@ -100,7 +137,13 @@ public class ConsoleController {
     }
 
     public void submitCode(ActionEvent actionEvent) {
-        c.PrintLn(getCode());
+        try {
+            parser.Read(getCode());
+            parser.RunApp();
+        } catch (Exception e) {
+            showException(e);
+        }
+
         clearCodeInput();
     }
 
