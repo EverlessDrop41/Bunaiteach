@@ -1,5 +1,7 @@
 import Console.GUIConsole;
 import Language.Parser;
+import Console.IConsole;
+import Console.TestConsole;
 
 import static javafx.application.Application.launch;
 
@@ -9,5 +11,10 @@ import static javafx.application.Application.launch;
 public class Main {
     public static void main(String[] args) throws Exception {
         GUIConsole.Main(args);
+//        IConsole console = new TestConsole();
+//        Parser parser = new Parser(console);
+//        //parser.Read("VAR A:INT = 2\nFUNC X:INT A:INT B:INT\nRETURN A + B\nEND\nVAR B:INT = X(A, 3) + 2\nPRINT B");
+//        parser.Read("VAR A:INT = 0\nWHILE A < 10\nPRINT A\nVAR A:INT = A + 1\nENDWHILE");
+//        parser.RunApp();
     }
 }

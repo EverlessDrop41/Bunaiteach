@@ -1,6 +1,7 @@
 package Language;
 
 import java.util.HashMap;
+import java.util.TreeSet;
 
 /**
  * Created by emilyperegrine on 27/08/2016.
@@ -13,8 +14,11 @@ public class VariableCollection {
 
     private HashMap<String, Variable<Character>> mChars;
     private HashMap<String, Variable<String>> mStrings;
+    
+    private TreeSet<String> mNames;
 
     public VariableCollection() {
+        mNames = new TreeSet<String>();
         mBools = new HashMap<String, Variable<Boolean>>();
         mInts = new HashMap<String, Variable<Integer>>();
         mFloats = new HashMap<String, Variable<Float>>();
@@ -82,27 +86,53 @@ public class VariableCollection {
         return mChars.get(name);
     }
 
+    public TreeSet<String> getNames() {
+        return mNames;
+    }
+
     public String getString(String name) {
         return mStrings.get(name).getValue();
     }
 
+    public void add(Variable variable) throws Exception {
+        if (variable.getTypeString().equals("INT")) {
+            this.addInt(variable);
+        } else if (variable.getTypeString().equals("STRING")) {
+            this.addString(variable);
+        } else if (variable.getTypeString().equals("BOOL")) {
+            this.addBool(variable);
+        } else if (variable.getTypeString().equals("FLOAT")) {
+            this.addFloat(variable);
+        } else if (variable.getTypeString().equals("CHAR")) {
+            this.addChar(variable);
+        } else {
+            throw new Exception("Unknown type");
+        }
+    }
+
     public void addBool(Variable<Boolean> var) {
+        mNames.add(var.getName());
         mBools.put(var.getName(), var);
     }
 
     public void addInt(Variable<Integer> var) {
+        mNames.add(var.getName());
         mInts.put(var.getName(), var);
     }
 
     public void addFloat(Variable<Float> var) {
+        mNames.add(var.getName());
         mFloats.put(var.getName(), var);
     }
 
     public void addChar(Variable<Character> var) {
+        mNames.add(var.getName());
         mChars.put(var.getName(), var);
     }
 
     public void addString (Variable<String> var) {
+        mNames.add(var.getName());
         mStrings.put(var.getName(), var);
     }
+
 }
