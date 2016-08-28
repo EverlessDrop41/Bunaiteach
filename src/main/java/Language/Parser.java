@@ -23,7 +23,8 @@ public class Parser {
         "IF",
         "ENDIF",
         "WHILE",
-        "ENDWHILE"
+        "ENDWHILE",
+        "RETURN"
     };
 
     private List<String> mKeywords;
@@ -154,7 +155,7 @@ public class Parser {
                 } else if (seperated[0].equals("RETURN")) {
                     // Get text of what we are returning
                     // Get expression to evaluate
-                    String expression = String.join("", Arrays.copyOfRange(seperated, 3, seperated.length));
+                    String expression = String.join("", Arrays.copyOfRange(seperated, 1, seperated.length));
 
                     // Sub in variables and functions
                     for (String varName: mVariables.getNames()) {
@@ -184,6 +185,8 @@ public class Parser {
                 Function function = (Function) mFunctions.get(seperated[0]);
                 // TOODO: add arg handling hear
                 //Object object = function.call();
+                Object object = function.call();
+                System.out.print(object);
             } else {
                 throw new Exception("Do not know what to do");
             }
