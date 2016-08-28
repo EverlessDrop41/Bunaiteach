@@ -138,7 +138,8 @@ public class ConsoleController {
 
     public void submitCode(ActionEvent actionEvent) {
         try {
-            parser.Read(getCode());
+            String code = getCode();
+            parser.Read(code);
             parser.RunApp();
         } catch (Exception e) {
             showException(e);

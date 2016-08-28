@@ -3,7 +3,7 @@ package Language;
 import java.util.LinkedHashMap;
 import java.util.Arrays;
 
-public class Function {
+public class Function implements IFunction {
     private String[] mCode;
     private String mName;
     private String mReturnType;
@@ -35,6 +35,7 @@ public class Function {
         mCode = Arrays.copyOfRange(code, 1, code.length - 1);
     }
 
+    @Override
     public Object call(VariableCollection params) throws Exception {
         Parser parser = new Parser();
         
