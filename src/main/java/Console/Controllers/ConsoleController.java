@@ -22,6 +22,12 @@ public class ConsoleController {
 
     IConsole c;
 
+    @FXML
+    protected void initialize() {
+        System.out.println("start");
+
+    }
+
     public ConsoleController() {
         c = new IConsole() {
             public void Print(String input) {
