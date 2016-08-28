@@ -44,7 +44,7 @@ public class ConsoleController {
         ConsoleOutput.setEditable(false);
 
         ConsoleInput.setOnAction(event -> {
-            c.PrintLn(c.Input());
+            c.PrintLn(ConsoleInput.getText());
             ConsoleInput.clear();
         });
 
@@ -81,5 +81,9 @@ public class ConsoleController {
         Optional<String> result = dialog.showAndWait();
 
         return result.isPresent() ? result.get() : "";
+    }
+
+    public void submitCode(ActionEvent actionEvent) {
+
     }
 }

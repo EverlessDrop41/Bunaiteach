@@ -14,4 +14,7 @@
       fx:id="container">
     <TextArea fx:id="ConsoleOutput" />
     <TextField fx:id="ConsoleInput" promptText="Enter Command" />
+    <Label text="Code Area: " />
+    <TextArea fx:id="CodeInput" />
+    <Button onAction="#submitCode">Submit Code</Button>
 </VBox>
