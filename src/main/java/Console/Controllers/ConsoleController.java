@@ -10,12 +10,20 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.stage.FileChooser;
+import sun.nio.ch.IOUtil;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Optional;
 
 /**
  * Created by emilyperegrine on 27/08/2016.
  */
 public class ConsoleController {
+    @FXML private TextArea CodeInput;
     @FXML private TextArea ConsoleOutput;
     @FXML private TextField ConsoleInput;
 
@@ -83,7 +91,46 @@ public class ConsoleController {
         return result.isPresent() ? result.get() : "";
     }
 
+    public void clearCodeInput() {
+        CodeInput.setText("");
+    }
+
+    public String getCode() {
+        return  CodeInput.getText();
+    }
+
     public void submitCode(ActionEvent actionEvent) {
+        c.PrintLn(getCode());
+        clearCodeInput();
+    }
+
+    public void loadCodeFile(ActionEvent actionEvent) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choose a source code File");
+
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Bunaiteach File", "*.bunai", "*.bt", "*.bunaiteach"),
+                new FileChooser.ExtensionFilter("All Files", "*.*"),
+                new FileChooser.ExtensionFilter("Text File", "*.txt")
+        );
+
+
+        File selectedFile = fileChooser.showOpenDialog(null);
+
+        try {
+            if (selectedFile != null) {
+                c.PrintLn("Loaded File: " + selectedFile.getName());
+                try (FileReader reader = new FileReader(selectedFile.getPath())) {
+                    char[] chars = new char[(int) selectedFile.length()];
+                    reader.read(chars);
+                    String content = new String(chars);
+                    reader.close();
+                    CodeInput.setText(content);
+                }
+            }
+        } catch (Exception e) {
+            //TODO Alert error
+        }
 
     }
 }

@@ -16,5 +16,9 @@
     <TextField fx:id="ConsoleInput" promptText="Enter Command" />
     <Label text="Code Area: " />
     <TextArea fx:id="CodeInput" />
-    <Button onAction="#submitCode">Submit Code</Button>
+    <HBox>
+        <Button onAction="#submitCode">Submit Code</Button>
+        <Button onAction="#loadCodeFile">Load Code From File</Button>
+    </HBox>
+
 </VBox>
