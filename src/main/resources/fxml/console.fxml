@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.TextFlow?>
+<VBox stylesheets="/css/main.css"
+      xmlns="http://javafx.com/javafx/8"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="Console.Controllers.ConsoleController"
+      fx:id="container">
+    <TextArea fx:id="ConsoleOutput" />
+    <TextField fx:id="ConsoleInput" promptText="Enter Command" />
+    <Label text="Code Area: " />
+    <TextArea fx:id="CodeInput" />
+    <HBox>
+        <Button onAction="#submitCode">Submit Code</Button>
+        <Button onAction="#loadCodeFile">Load Code From File</Button>
+    </HBox>
+
+</VBox>
