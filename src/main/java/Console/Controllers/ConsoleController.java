@@ -6,10 +6,7 @@ import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -50,6 +47,20 @@ public class ConsoleController {
             c.PrintLn(c.Input());
             ConsoleInput.clear();
         });
+
+        ContextMenu consoleMenu = new ContextMenu();
+
+        consoleMenu.getItems().add(createItem("Clear Console", e -> {
+            ConsoleOutput.setText("");
+        }));
+
+        ConsoleOutput.setContextMenu(consoleMenu);
+    }
+
+    private MenuItem createItem(String name, EventHandler<ActionEvent> a) {
+        final MenuItem menuItem = new MenuItem(name);
+        menuItem.setOnAction(a);
+        return menuItem;
     }
 
     public void PrintToConsole(String message) {
