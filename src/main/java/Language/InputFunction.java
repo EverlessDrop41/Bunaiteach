@@ -9,7 +9,7 @@ import java.io.Console;
  */
 public class InputFunction implements IFunction {
 
-    IConsole mConsole;
+    private IConsole mConsole;
 
     public InputFunction(IConsole console) {
         mConsole = console;
