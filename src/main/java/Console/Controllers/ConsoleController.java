@@ -13,62 +13,73 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+
+import java.io.*;
+import java.nio.charset.Charset;
 import java.util.Optional;
+import java.util.Scanner;
 
 /**
  * Created by emilyperegrine on 27/08/2016.
  */
 public class ConsoleController {
-    @FXML private TextArea ConsoleOutput;
-    @FXML private TextField ConsoleInput;
+    @FXML private TextArea Console;
+
+    private PrintStream out;
+    private InputStream in;
 
     IConsole c;
 
     @FXML
     protected void initialize() {
+        Console.setWrapText(true);
+
+        TextInputControlStream stream = new TextInputControlStream(Console, Charset.defaultCharset());
+
+        try {
+            this.out = new PrintStream(stream.getOut(), true, Charset.defaultCharset().name());
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+        this.in = stream.getIn();
+
         System.out.println("start");
         c = new IConsole() {
             @Override
             public void Print(String input) {
-                PrintToConsole(input);
+                out.print(input);
             }
 
             @Override
             public void PrintLn(String input) {
-                PrintLineToConsole(input);
+                out.println(input);
             }
 
             @Override
-            public String Input() {
-                return GetConsoleInput();
+            public String Input() throws Exception {
+                Console.requestFocus();
+                BufferedReader buffer=new BufferedReader(new InputStreamReader(in));
+                return buffer.readLine();
             }
         };
 
-        ConsoleOutput.setEditable(false);
+    }
 
-        ConsoleInput.setOnAction(event -> {
+    public PrintStream getOut() {
+        return out;
+    }
+
+    public InputStream getIn() {
+        return in;
+    }
+
+    public void runStuff(ActionEvent actionEvent) {
+        c.PrintLn("Car");
+        try {
             c.PrintLn(c.Input());
-            ConsoleInput.clear();
-        });
-    }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-    public void PrintToConsole(String message) {
-        ConsoleOutput.appendText(message);
-    }
-
-    public void PrintLineToConsole(String mesage) {
-        ConsoleOutput.appendText(mesage + '\n');
-    }
-
-    public String GetConsoleInput() {
-        TextInputDialog dialog = new TextInputDialog(ConsoleInput.getText());
-        dialog.setTitle("Input Request Dialog");
-        dialog.setHeaderText("The program requests input");
-        dialog.setContentText("");
-
-// Traditional way to get the response value.
-        Optional<String> result = dialog.showAndWait();
-
-        return result.isPresent() ? result.get() : "";
     }
 }

@@ -6,5 +6,5 @@ package Console;
 public interface IConsole {
     void Print(String input);
     void PrintLn(String input);
-    String Input();
+    String Input() throws Exception;
 }

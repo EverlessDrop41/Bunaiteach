@@ -12,6 +12,6 @@
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="Console.Controllers.ConsoleController"
       fx:id="container">
-    <TextArea fx:id="ConsoleOutput" />
-    <TextField fx:id="ConsoleInput" promptText="Enter Command" />
+    <TextArea fx:id="Console" />
+    <Button onAction="#runStuff">Run Stuff</Button>
 </VBox>
