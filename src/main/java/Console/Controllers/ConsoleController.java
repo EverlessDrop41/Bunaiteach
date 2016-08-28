@@ -27,10 +27,27 @@ public class ConsoleController {
     @FXML
     protected void initialize() {
         System.out.println("start");
+        c = new IConsole() {
+            @Override
+            public void Print(String input) {
+                PrintToConsole(input);
+            }
+
+            @Override
+            public void PrintLn(String input) {
+                PrintLineToConsole(input);
+            }
+
+            @Override
+            public String Input() {
+                return GetConsoleInput();
+            }
+        };
+
         ConsoleOutput.setEditable(false);
 
         ConsoleInput.setOnAction(event -> {
-            PrintLineToConsole(GetConsoleInput());
+            c.PrintLn(c.Input());
             ConsoleInput.clear();
         });
     }
