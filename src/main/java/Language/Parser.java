@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.concurrent.Exchanger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 /**
  * Created by emilyperegrine on 27/08/2016.
@@ -104,28 +106,41 @@ public class Parser {
 
                             // Get function args
                             String args = text.substring(text.indexOf("(") + 1);
-                            args = args.substring(0, args.indexOf(")"));
+                            // System.out.println(text);
+                            // System.out.println(args);
+                            // args = args.substring(0, args.indexOf(")"));
 
                             // Split by commas
                             // TODO: Split by outer commas as to allow users to nest func calls e.g. A(1, B(2, 3), 4)
                             String[] params = args.split("[,]");
 
                             VariableCollection variables = new VariableCollection();
-                            for (String varName: mVariables.getNames()) {
-                                Variable variable = (Variable) mVariables.get(varName);
+                            
+                            Iterator<Entry<String, String>> itr = function.getParams().entrySet().iterator();
+                            int i = 0;
+                            while (itr.hasNext()) {
+                                Entry<String, String> entry = itr.next();
+                                String variableName = entry.getKey();
+                                String type = entry.getValue();
+                                Variable variable = Variable.fromTypeString(variableName, mEngine.eval(params[i]), type);
                                 variables.add(variable);
+                                i++;
                             }
+                            m.appendReplacement(sb, function.call(variables).toString().toString());
 
-                            m.appendReplacement(sb, Matcher.quoteReplacement(text));
                         }
                         m.appendTail(sb);
-                        // expression = expression.replace(, object.toString());
+                        
+                        expression = sb.toString();
+
+                        // 
                     }
 
                      // Get evaluations
                     Object evaluation = mEngine.eval(expression);
                     Variable variable = Variable.fromTypeString(name, evaluation, typeAsString);
                     mVariables.add(variable);
+                    currentLine++;
 
                 } else if (seperated[0].equals("FUNC")) {
                     // Get current line number                    
@@ -134,7 +149,6 @@ public class Parser {
                     while (c < programLines.length) {
                         if (programLines[c].equals("END")) {
                             // Create Function object
-
                             Function function = new Function(Arrays.copyOfRange(programLines, currentLine, c+1));
                             mFunctions.put(function.getName(), function);
                             // Set while loop til after function declartion
@@ -145,6 +159,8 @@ public class Parser {
                     }
                     
                 } else if (seperated[0].equals("PRINT")) {
+                    Variable variable = (Variable) mVariables.get("B");
+                    System.out.println(variable.getStringValue());
                     currentLine++;
                     continue;
                 } else if (seperated[0].equals("INPUT")) {
@@ -193,7 +209,7 @@ public class Parser {
             } else {
                 throw new Exception("Do not know what to do");
             }
-            currentLine++;
+            //currentLine++;
         }
 
         return new Object();

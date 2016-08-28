@@ -134,4 +134,5 @@ public class VariableCollection {
         mNames.add(var.getName());
         mStrings.put(var.getName(), var);
     }
+
 }
