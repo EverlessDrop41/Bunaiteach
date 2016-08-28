@@ -118,7 +118,8 @@ public class Parser {
                 } else if (seperated[0].equals("PRINT")) {
                     String expression = String.join("", Arrays.copyOfRange(seperated, 1, seperated.length));
                     expression = subInVariablesAndFunctions(expression);
-                    mConsole.PrintLn(expression);
+                    Object output = mEngine.eval(expression);
+                    mConsole.PrintLn(output.toString());
                     currentLine++;
                     continue;
                 } else if (seperated[0].equals("INPUT")) {
@@ -168,25 +169,46 @@ public class Parser {
                     // Get end line
                     int c = currentLine + 1;
                     int lineToGoTo = -1;
+                    int elseLine = -1;
 
                     while (c < programLines.length) {
                         if (programLines[c].equals("ENDIF")) {
                             lineToGoTo = c + 1;
                             break ;
+                        } else if (programLines[c].equals("ELSE")) {
+                            elseLine = c;
                         }
                         c++;
                     }
 
                     if (lineToGoTo == -1) {
-                        throw new Exception("While loop not terminated.");
+                        throw new Exception("If statement not terminated.");
                     }
 
 
                     // Get lines to execute
+                    int startLine;
+                    int endLine;
+
+                    if (conditionBoolean) {
+                        startLine = currentLine + 1;
+                        if (elseLine != -1) {
+                            endLine = elseLine;
+                        } else {
+                            endLine = lineToGoTo - 1;
+                        }
+                    } else {
+                        startLine = elseLine + 1;
+                        endLine = lineToGoTo - 1;
+                    }
 
                     // Run lines
+                    String[] lines = Arrays.copyOfRange(programLines, startLine, endLine);
+                    this.Run(lines, "");
 
                     // Update current line
+                    currentLine = lineToGoTo;
+
                 } else if (seperated[0].equals("RETURN")) {
                     // Get text of what we are returning
                     // Get expression to evaluate
