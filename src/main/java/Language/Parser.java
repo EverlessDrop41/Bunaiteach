@@ -11,6 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import Console.IConsole;
 
 /**
  * Created by emilyperegrine on 27/08/2016.
@@ -36,7 +37,9 @@ public class Parser {
     private String[] mLines;
 
     private ScriptEngineManager mManager = new ScriptEngineManager();
-        private ScriptEngine mEngine = mManager.getEngineByName("JavaScript");
+    private ScriptEngine mEngine = mManager.getEngineByName("JavaScript");
+
+    private IConsole mConsole; 
 
 
     public Parser() {
@@ -45,8 +48,8 @@ public class Parser {
         mFunctions = new HashMap<String, Function>();
     }
 
-    public Parser(String program) {
-        Read(program);
+    public Parser(IConsole console) {
+        mConsole = console;
         mKeywords = Arrays.asList(KEYWORDS);
         mVariables = new VariableCollection();
         mFunctions = new HashMap<String, Function>();
@@ -88,55 +91,9 @@ public class Parser {
 
                     // Get expression to evaluate
                     String expression = String.join("", Arrays.copyOfRange(seperated, 3, seperated.length));
-
-                    // Sub in variables and functions
-                    for (String varName: mVariables.getNames()) {
-                        Variable variable = (Variable) mVariables.get(varName);
-                        expression = expression.replace(variable.getName(), variable.getStringValue());
-                    }
-
-                    for (Function function: mFunctions.values()) {
-                        //Object object = function.call();
-                        // Find funcName(1,2,3)
-                        Pattern patt = Pattern.compile(function.getName() + "\\((.*)\\)");
-                        Matcher m = patt.matcher(expression);
-                        StringBuffer sb = new StringBuffer(expression.length());
-                        while (m.find()) {
-                            String text = m.group(1);
-
-                            // Get function args
-                            String args = text.substring(text.indexOf("(") + 1);
-                            // System.out.println(text);
-                            // System.out.println(args);
-                            // args = args.substring(0, args.indexOf(")"));
-
-                            // Split by commas
-                            // TODO: Split by outer commas as to allow users to nest func calls e.g. A(1, B(2, 3), 4)
-                            String[] params = args.split("[,]");
-
-                            VariableCollection variables = new VariableCollection();
-                            
-                            Iterator<Entry<String, String>> itr = function.getParams().entrySet().iterator();
-                            int i = 0;
-                            while (itr.hasNext()) {
-                                Entry<String, String> entry = itr.next();
-                                String variableName = entry.getKey();
-                                String type = entry.getValue();
-                                Variable variable = Variable.fromTypeString(variableName, mEngine.eval(params[i]), type);
-                                variables.add(variable);
-                                i++;
-                            }
-                            m.appendReplacement(sb, function.call(variables).toString().toString());
-
-                        }
-                        m.appendTail(sb);
-                        
-                        expression = sb.toString();
-
-                        // 
-                    }
-
-                     // Get evaluations
+                    expression = subInVariablesAndFunctions(expression);
+                    
+                    // Get evaluations
                     Object evaluation = mEngine.eval(expression);
                     Variable variable = Variable.fromTypeString(name, evaluation, typeAsString);
                     mVariables.add(variable);
@@ -159,8 +116,9 @@ public class Parser {
                     }
                     
                 } else if (seperated[0].equals("PRINT")) {
-                    Variable variable = (Variable) mVariables.get("B");
-                    System.out.println(variable.getStringValue());
+                    String expression = String.join("", Arrays.copyOfRange(seperated, 1, seperated.length));
+                    expression = subInVariablesAndFunctions(expression);
+                    mConsole.PrintLn(expression);
                     currentLine++;
                     continue;
                 } else if (seperated[0].equals("INPUT")) {
@@ -217,5 +175,51 @@ public class Parser {
 
     public void setVariableCollection(VariableCollection variables) {
         mVariables = variables;
+    }
+
+    public String subInVariablesAndFunctions(String expression) throws Exception {
+        // Sub in variables and functions
+        for (String varName: mVariables.getNames()) {
+            Variable variable = (Variable) mVariables.get(varName);
+            expression = expression.replace(variable.getName(), variable.getStringValue());
+        }
+
+        for (Function function: mFunctions.values()) {
+            //Object object = function.call();
+            // Find funcName(1,2,3)
+            Pattern patt = Pattern.compile(function.getName() + "\\((.*)\\)");
+            Matcher m = patt.matcher(expression);
+            StringBuffer sb = new StringBuffer(expression.length());
+            while (m.find()) {
+                String text = m.group(1);
+
+                // Get function args
+                String args = text.substring(text.indexOf("(") + 1);
+
+                // Split by commas
+                // TODO: Split by outer commas as to allow users to nest func calls e.g. A(1, B(2, 3), 4)
+                String[] params = args.split("[,]");
+
+                VariableCollection variables = new VariableCollection();
+                
+                Iterator<Entry<String, String>> itr = function.getParams().entrySet().iterator();
+                int i = 0;
+                while (itr.hasNext()) {
+                    Entry<String, String> entry = itr.next();
+                    String variableName = entry.getKey();
+                    String type = entry.getValue();
+                    Variable variable = Variable.fromTypeString(variableName, mEngine.eval(params[i]), type);
+                    variables.add(variable);
+                    i++;
+                }
+                m.appendReplacement(sb, function.call(variables).toString().toString());
+
+            }
+            m.appendTail(sb);
+            
+            expression = sb.toString();
+        }
+
+        return expression;
     }
 }
