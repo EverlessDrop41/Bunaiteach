@@ -145,12 +145,16 @@ public class Parser {
                     }
                     
                 } else if (seperated[0].equals("PRINT")) {
+                    currentLine++;
                     continue;
                 } else if (seperated[0].equals("INPUT")) {
+                    currentLine++;
                     continue;
                 } else if (seperated[0].equals("WHILE")) {
+                    currentLine++;
                     continue;
                 } else if (seperated[0].equals("IF")) {
+                    currentLine++;
                     continue;
                 } else if (seperated[0].equals("RETURN")) {
                     // Get text of what we are returning
@@ -185,8 +189,7 @@ public class Parser {
                 Function function = (Function) mFunctions.get(seperated[0]);
                 // TOODO: add arg handling hear
                 //Object object = function.call();
-                Object object = function.call();
-                System.out.print(object);
+                //System.out.print(object);
             } else {
                 throw new Exception("Do not know what to do");
             }
