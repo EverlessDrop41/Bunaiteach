@@ -143,6 +143,7 @@ public class ConsoleController {
             parser.RunApp();
         } catch (Exception e) {
             showException(e);
+            e.printStackTrace(System.out);
         }
 
         clearCodeInput();

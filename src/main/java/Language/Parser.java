@@ -20,7 +20,7 @@ public class Parser {
     public static final String[] KEYWORDS = {
         "VAR",
         "PRINT",
-        "INPUT",
+        //"INPUT",
         "FUNC",
         "END",
         "IF",
@@ -32,7 +32,7 @@ public class Parser {
 
     private List<String> mKeywords;
     private VariableCollection mVariables;
-    private HashMap<String, Function> mFunctions;
+    private HashMap<String, IFunction> mFunctions;
 
     private String[] mLines;
 
@@ -43,16 +43,19 @@ public class Parser {
 
 
     public Parser() {
-        mKeywords = Arrays.asList(KEYWORDS);
-        mVariables = new VariableCollection();
-        mFunctions = new HashMap<String, Function>();
+        Init();
     }
 
     public Parser(IConsole console) {
         mConsole = console;
+        Init();
+    }
+
+    public void Init() {
         mKeywords = Arrays.asList(KEYWORDS);
         mVariables = new VariableCollection();
-        mFunctions = new HashMap<String, Function>();
+        mFunctions = new HashMap<>();
+        mFunctions.put("INPUT", new InputFunction(mConsole));
     }
 
     public void Read(String program) {
@@ -120,9 +123,6 @@ public class Parser {
                     expression = subInVariablesAndFunctions(expression);
                     Object output = mEngine.eval(expression);
                     mConsole.PrintLn(output.toString());
-                    currentLine++;
-                    continue;
-                } else if (seperated[0].equals("INPUT")) {
                     currentLine++;
                     continue;
                 } else if (seperated[0].equals("WHILE")) {
@@ -239,7 +239,7 @@ public class Parser {
 
                 }
             } else if (mFunctions.containsKey(seperated[0])) {
-                Function function = (Function) mFunctions.get(seperated[0]);
+                IFunction function = (Function) mFunctions.get(seperated[0]);
                 // TOODO: add arg handling hear
                 //Object object = function.call();
                 //System.out.print(object);
@@ -263,7 +263,7 @@ public class Parser {
             expression = expression.replace(variable.getName(), variable.getStringValue());
         }
 
-        for (Function function: mFunctions.values()) {
+        for (IFunction function: mFunctions.values()) {
             //Object object = function.call();
             // Find funcName(1,2,3)
             Pattern patt = Pattern.compile(function.getName() + "\\((.*)\\)");
