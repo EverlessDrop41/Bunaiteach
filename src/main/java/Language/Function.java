@@ -18,7 +18,7 @@ public class Function {
         String mName = declaration[0];
         String mReturnType = declaration[1];
 
-        System.out.println("DECLARTION");
+        System.out.println(declaration.toString());
         System.out.println(mName);
         System.out.println(mReturnType);
         System.out.flush();
@@ -40,8 +40,12 @@ public class Function {
         mCode = Arrays.copyOfRange(code, 1, code.length - 1);
     }
 
-    public Object call() throws Exception {
+    public Object call(VariableCollection params) throws Exception {
         Parser parser = new Parser();
+        
+        // Update variable collection
+        parser.setVariableCollection(params);
+        
         return parser.Run(mCode, mReturnType);
     }
 

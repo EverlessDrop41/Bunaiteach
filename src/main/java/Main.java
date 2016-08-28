@@ -5,7 +5,7 @@ import Language.Parser;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        Parser parser = new Parser("FUNC X:INT\nRETURN 1\nEND\nVAR B:INT = 2n\nX");
+        Parser parser = new Parser("VAR A:INT = 2\nFUNC X:INT A:INT B:INT\nRETURN A + B\nEND\nVAR B:INT = X(A, 3)\nPRINT B");
         parser.RunApp();
     }
 }

@@ -94,6 +94,22 @@ public class VariableCollection {
         return mStrings.get(name).getValue();
     }
 
+    public void add(Variable variable) throws Exception {
+        if (variable.getTypeString().equals("INT")) {
+            this.addInt(variable);
+        } else if (variable.getTypeString().equals("STRING")) {
+            this.addString(variable);
+        } else if (variable.getTypeString().equals("BOOL")) {
+            this.addBool(variable);
+        } else if (variable.getTypeString().equals("FLOAT")) {
+            this.addFloat(variable);
+        } else if (variable.getTypeString().equals("CHAR")) {
+            this.addChar(variable);
+        } else {
+            throw new Exception("Unknown type");
+        }
+    }
+
     public void addBool(Variable<Boolean> var) {
         mNames.add(var.getName());
         mBools.put(var.getName(), var);

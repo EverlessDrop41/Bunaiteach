@@ -7,6 +7,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Exchanger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by emilyperegrine on 27/08/2016.
@@ -90,27 +92,39 @@ public class Parser {
                         expression = expression.replace(variable.getName(), variable.getStringValue());
                     }
 
+                    for (Function function: mFunctions.values()) {
+                        //Object object = function.call();
+                        // Find funcName(1,2,3)
+                        Pattern patt = Pattern.compile(function.getName() + "\\((.*)\\)");
+                        Matcher m = patt.matcher(expression);
+                        StringBuffer sb = new StringBuffer(expression.length());
+                        while (m.find()) {
+                            String text = m.group(1);
+
+                            // Get function args
+                            String args = text.substring(text.indexOf("(") + 1);
+                            args = args.substring(0, args.indexOf(")"));
+
+                            // Split by commas
+                            // TODO: Split by outer commas as to allow users to nest func calls e.g. A(1, B(2, 3), 4)
+                            String[] params = args.split("[,]");
+
+                            VariableCollection variables = new VariableCollection();
+                            for (String varName: mVariables.getNames()) {
+                                Variable variable = (Variable) mVariables.get(varName);
+                                variables.add(variable);
+                            }
+
+                            m.appendReplacement(sb, Matcher.quoteReplacement(text));
+                        }
+                        m.appendTail(sb);
+                        // expression = expression.replace(, object.toString());
+                    }
+
                      // Get evaluations
                     Object evaluation = mEngine.eval(expression);
-
-                    if (typeAsString.equals("INT")) {
-                         Variable<Integer> variable = new Variable<Integer>(name, (Integer) evaluation);
-                         mVariables.addInt(variable);
-                    } else if (typeAsString.equals("STRING")) {
-                        Variable<String> variable = new Variable<String>(name, (String) evaluation);
-                         mVariables.addString(variable);
-                    } else if (typeAsString.equals("BOOL")) {
-                        Variable<Boolean> variable = new Variable<Boolean>(name, (Boolean) evaluation);
-                         mVariables.addBool(variable);
-                    } else if (typeAsString.equals("FLOAT")) {
-                        Variable<Float> variable = new Variable<Float>(name, (Float) evaluation);
-                         mVariables.addFloat(variable);
-                    } else if (typeAsString.equals("CHAR")) {
-                        Variable<Character> variable = new Variable<Character>(name, (Character) evaluation);
-                         mVariables.addChar(variable);
-                    } else {
-                        throw new Exception("Unknown type");
-                    }
+                    Variable variable = Variable.fromTypeString(name, evaluation, typeAsString);
+                    mVariables.add(variable);
 
                 } else if (seperated[0].equals("FUNC")) {
                     // Get current line number                    
@@ -168,7 +182,8 @@ public class Parser {
                 }
             } else if (mFunctions.containsKey(seperated[0])) {
                 Function function = (Function) mFunctions.get(seperated[0]);
-                Object object = function.call();
+                // TOODO: add arg handling hear
+                //Object object = function.call();
             } else {
                 throw new Exception("Do not know what to do");
             }
@@ -176,5 +191,9 @@ public class Parser {
         }
 
         return new Object();
+    }
+
+    public void setVariableCollection(VariableCollection variables) {
+        mVariables = variables;
     }
 }
