@@ -4,68 +4,47 @@ import Console.IConsole;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-
+import javafx.scene.text.TextFlow;
 import java.util.Optional;
 
 /**
  * Created by emilyperegrine on 27/08/2016.
  */
 public class ConsoleController {
-    @FXML private TextArea ConsoleInput;
-    @FXML private VBox container;
-    @FXML private Text ConsoleOutput;
+    @FXML private TextArea ConsoleOutput;
+    @FXML private TextField ConsoleInput;
 
     IConsole c;
 
     @FXML
     protected void initialize() {
         System.out.println("start");
+        ConsoleOutput.setEditable(false);
 
+        ConsoleInput.setOnAction(event -> {
+            PrintLineToConsole(GetConsoleInput());
+            ConsoleInput.clear();
+        });
     }
 
-    public ConsoleController() {
-        c = new IConsole() {
-            public void Print(String input) {
-                GuiPrint(input);
-            }
-
-            public void PrintLn(String input) {
-                GuiPrintLn(input);
-            }
-
-            public String Input() {
-                return GuiGetInput();
-            }
-        };
+    public void PrintToConsole(String message) {
+        ConsoleOutput.appendText(message);
     }
 
-    public void setConsoleOutputText(String text) {
-         ConsoleOutput.setText(text);
+    public void PrintLineToConsole(String mesage) {
+        ConsoleOutput.appendText(mesage + '\n');
     }
 
-    public String getConsoleText() {
-        return ConsoleOutput.getText();
-    }
-
-    public void submitCode(ActionEvent actionEvent) {
-        c.PrintLn(ConsoleInput.getText());
-    }
-
-    public void GuiPrint(String message) {
-       setConsoleOutputText(getConsoleText() + message);
-    }
-
-    public void GuiPrintLn(String message) {
-        GuiPrint(message + "\n");
-    }
-
-    public String GuiGetInput() {
-        TextInputDialog dialog = new TextInputDialog("walter");
+    public String GetConsoleInput() {
+        TextInputDialog dialog = new TextInputDialog(ConsoleInput.getText());
         dialog.setTitle("Input Request Dialog");
         dialog.setHeaderText("The program requests input");
         dialog.setContentText("");
