@@ -125,8 +125,38 @@ public class Parser {
                     currentLine++;
                     continue;
                 } else if (seperated[0].equals("WHILE")) {
-                    currentLine++;
-                    continue;
+
+                    // Get lines in loop
+                    int c = currentLine + 1;
+                    int lineToGoTo = -1;
+
+                    while (c < programLines.length) {
+                        if (programLines[c].equals("ENDWHILE")) {
+                            lineToGoTo = c + 1;
+                            break ;
+                        }
+                        c++;
+                    }
+
+                    if (lineToGoTo == -1) {
+                        throw new Exception("While loop not terminated.");
+                    }
+                    // Get conditions
+                    String condition = String.join("", Arrays.copyOfRange(seperated, 1, seperated.length));
+                    String conditionSubbed = subInVariablesAndFunctions(condition);
+
+                    Boolean conditionBoolean = (Boolean) mEngine.eval(conditionSubbed);
+
+                    if (conditionBoolean) {
+                        do {
+                            this.Run(Arrays.copyOfRange(programLines, currentLine + 1, lineToGoTo-1), "");
+                            conditionSubbed = subInVariablesAndFunctions(condition);
+                            conditionBoolean = (Boolean) mEngine.eval(conditionSubbed);
+                        } while (conditionBoolean);
+                    }
+                    
+                    currentLine = lineToGoTo;
+                    
                 } else if (seperated[0].equals("IF")) {
                     currentLine++;
                     continue;
